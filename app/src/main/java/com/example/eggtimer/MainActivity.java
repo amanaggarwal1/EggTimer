@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar countDownSeekBar;
     private ImageView eggImage, finalEggImage;
     private TextView displayTime;
-    private ImageButton startButton;
+    private ImageButton startButton, resetButton, plusOneButton;
 
     //Count down timer which controls the timer time set by user
     CountDownTimer countDownTimer;
@@ -60,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void pauseTimer(){
+        countDownTimer.cancel(); //Cancels the timer
+    }
+
     //Function to update views for timer
     private void updateTimer(int secondsLeft){
         int minutes = secondsLeft / 60; // Calculating minutes corresponding to progress
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         countDownTimer.cancel(); //Cancel the timer even if not finished by itself
         updateTimer(initialTime); //Updates the timer to default configuration
         finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
+        startButton.setImageResource(R.drawable.ic_play_image_button);
     }
 
     // Function to play the times up tone in loop
@@ -96,16 +101,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Check if a timer is currently active on not
         if(isTimerActive) {
-            resetTimer();
+            pauseTimer();
             startButton.setImageResource(R.drawable.ic_play_image_button);
         }
         else{
             startTimer();
-            startButton.setImageResource(R.drawable.ic_reset_image_button);
+            startButton.setImageResource(R.drawable.ic_pause);
         }
 
         //Update the timer run status
         isTimerActive ^= true;
+    }
+
+    public void triggerStop(View view) {
+        resetTimer();
     }
 
     @Override
@@ -118,7 +127,9 @@ public class MainActivity extends AppCompatActivity {
         eggImage = findViewById(R.id.eggIV);
         finalEggImage = findViewById(R.id.finalEggIV);
         displayTime = findViewById(R.id.timerTV);
-        startButton = findViewById(R.id.startButton);
+        startButton = findViewById(R.id.startImageButton);
+        resetButton = findViewById(R.id.resetImageButton);
+        plusOneButton = findViewById(R.id.plusOneImageButton);
 
         //Setting initial parameters
         countDownSeekBar.setMax(maximumTime);
