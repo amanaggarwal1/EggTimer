@@ -2,11 +2,14 @@ package com.example.eggtimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Declaring views
     private SeekBar countDownSeekBar;
-    private ImageView eggImage;
+    private ImageView eggImage, finalEggImage;
     private TextView displayTime;
     private ImageButton startButton;
 
@@ -37,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     //Function to start the timer
     private void startTimer(){
 
+        //Updates egg image over a period of time
+        finalEggImage.animate().alpha(1).setDuration(countDownSeekBar.getProgress() * 1000);
+
+        //Disables the seek bar when a timer is started
         countDownSeekBar.setEnabled(false);
 
         countDownTimer = new CountDownTimer(countDownSeekBar.getProgress()*1000 + 100, 1000) {
@@ -69,10 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to reset time to default configurations
     private void resetTimer(){
-        countDownSeekBar.setEnabled(true);
-        mediaPlayer.stop();
-        countDownTimer.cancel();
-        updateTimer(initialTime);
+        countDownSeekBar.setEnabled(true);  //Disables the seek bar when the timer has reset
+        mediaPlayer.stop(); //Stops the time up tone
+        countDownTimer.cancel(); //Cancel the timer even if not finished by itself
+        updateTimer(initialTime); //Updates the timer to default configuration
+        finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
     }
 
     // Function to play the times up tone in loop
@@ -108,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         //Linking views
         countDownSeekBar = findViewById(R.id.timerSeekBar);
         eggImage = findViewById(R.id.eggIV);
+        finalEggImage = findViewById(R.id.finalEggIV);
         displayTime = findViewById(R.id.timerTV);
         startButton = findViewById(R.id.startButton);
 
