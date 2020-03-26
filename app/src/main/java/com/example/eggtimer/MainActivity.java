@@ -2,13 +2,18 @@ package com.example.eggtimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity<countDownSeekBar> extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     //Declaring views
     private SeekBar countDownSeekBar;
@@ -16,7 +21,62 @@ public class MainActivity<countDownSeekBar> extends AppCompatActivity {
     private TextView displayTime;
     private Button startButton;
 
+    //Count down timer which controls the timer time set by user
+    CountDownTimer countDownTimer;
 
+    //Media player that will control times up tone
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+
+    //Declaring and setting some constants
+    final int initialTime = 30, maximumTime = 600;
+
+    // boolean variable that will track if any timer is already present or not
+    private boolean isTimerRunning = false;
+
+    private void startTimer(){
+        countDownTimer = new CountDownTimer(countDownSeekBar.getProgress()*1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                updateTimer((int) millisUntilFinished / 1000);
+            }
+
+            @Override
+            public void onFinish() {
+                Log.i("LOGCAT", "Finished");
+                playTimesUpRingtone();
+            }
+        }.start();
+    }
+
+    private void updateTimer(int secondsLeft){
+        int minutes = secondsLeft / 60; // Calculating minutes corresponding to progress
+        int seconds = secondsLeft % 60; // Calculating seconds corresponding to progress
+
+        if(seconds < 10)
+            displayTime.setText(minutes + ":0" + seconds);
+        else
+            displayTime.setText(minutes + ":" + seconds);
+    }
+
+    private void resetTimer(){
+        mediaPlayer.stop();
+        countDownTimer.cancel();
+        updateTimer(initialTime);
+    }
+
+    private void playTimesUpRingtone(){
+        mediaPlayer = MediaPlayer.create(this ,R.raw.times_up_ringtone);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+    }
+
+    public void triggerCountDown(View view){
+        Log.i("LOGCAT", "Button Pressed");
+        if(isTimerRunning) resetTimer();
+        else startTimer();
+
+        isTimerRunning ^= true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +90,6 @@ public class MainActivity<countDownSeekBar> extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
 
         //Setting initial parameters
-        int initialTime = 30, maximumTime = 600;
         countDownSeekBar.setMax(maximumTime);
         countDownSeekBar.setProgress(initialTime);
 
@@ -38,14 +97,7 @@ public class MainActivity<countDownSeekBar> extends AppCompatActivity {
         countDownSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int minutes = progress / 60; // Calculating minutes corresponding to progress
-                int seconds = progress % 60; // Calculating seconds corresponding to progress
-
-                if(seconds < 10)
-                    displayTime.setText(minutes + ":0" + seconds);
-                else
-                    displayTime.setText(minutes + ":" + seconds);
-
+                updateTimer(progress);
             }
 
             @Override
