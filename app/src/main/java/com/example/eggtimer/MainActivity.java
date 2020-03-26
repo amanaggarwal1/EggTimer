@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     //Function to start the timer
     private void startTimer(){
 
-        plusOneButton.setEnabled(true);
-        plusOneButton.animate().alpha(1);
+        plusOneButton.setEnabled(true); //Enabling plus one button
+        plusOneButton.animate().alpha(1); //Setting opacity of enabled button to max
 
         //Updates egg image over a period of time
         finalEggImage.animate().alpha(1).setDuration(countDownSeekBar.getProgress() * 1000);
@@ -58,8 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Log.i("LOGCAT", "Finished");
-                playTimesUpRingtone();
+                isTimerActive = false; // Updating status of time activity
+                playTimesUpRingtone(); // Play the times up tone
+                startButton.setEnabled(false); // Disable start button
+                startButton.animate().alpha(0.4f); // Lower the opacity of disabled button
+                plusOneButton.setImageResource(R.drawable.ic_reset_image_button); // Setting plus one button image
             }
         }.start();
     }
@@ -92,8 +95,9 @@ public class MainActivity extends AppCompatActivity {
     private  void increaseTimerDuration(){
         countDownTimer.cancel();
         int secondsLeft = countDownSeekBar.getProgress();
-        if(secondsLeft > maximumTime - 60 ) secondsLeft = maximumTime;
-        else secondsLeft += 60;
+        if(secondsLeft > maximumTime - 60 ) countDownSeekBar.setMax(countDownSeekBar.getMax() + 60);
+        //else
+            secondsLeft += 60;
 
         finalEggImage.animate().alphaBy(timeSetByUser / (timeSetByUser + 60) ).setDuration(1000);
         updateTimer(secondsLeft);
@@ -105,11 +109,13 @@ public class MainActivity extends AppCompatActivity {
         countDownTimer.cancel(); //Cancel the timer even if not finished by itself
         updateTimer(timeSetByUser); //Updates the timer to default configuration
         finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
-        startButton.setImageResource(R.drawable.ic_play_image_button); //Set start button
-        plusOneButton.setImageResource(R.drawable.ic_plus_one);
-        plusOneButton.setEnabled(false);
-        plusOneButton.animate().alpha(0.4f);
-        isTimerActive = false;
+        startButton.setImageResource(R.drawable.ic_play_image_button); //Reset start button
+        startButton.setEnabled(true); // Enabling play button;
+        startButton.animate().alpha(1); //Set opacity of enabled button to max
+        plusOneButton.setImageResource(R.drawable.ic_plus_one); //Reset plus one button
+        plusOneButton.setEnabled(false); // Disable plus one button
+        plusOneButton.animate().alpha(0.4f); // Lower the opacity of disabled button
+        isTimerActive = false; // Updating the status of timer activity
     }
 
     // Function linked with button with id = "R.id.startButton"
@@ -136,17 +142,21 @@ public class MainActivity extends AppCompatActivity {
         countDownSeekBar.setEnabled(true);  //Disables the seek bar when the timer has reset
         mediaPlayer.stop(); //Stops the time up tone
         countDownTimer.cancel(); //Cancel the timer even if not finished by itself
+        countDownSeekBar.setMax(maximumTime); //Resetting the seek bar maximum value at maximum time
         updateTimer(initialTime); //Updates the timer to default configuration
         finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
-        startButton.setImageResource(R.drawable.ic_play_image_button); //Set start button
-        plusOneButton.setImageResource(R.drawable.ic_plus_one);
-        plusOneButton.setEnabled(false);
-        plusOneButton.animate().alpha(0.4f);
-        isTimerActive = false;
-        timeSetByUser = -1;
+        startButton.setImageResource(R.drawable.ic_play_image_button); //Reset start button
+        startButton.setEnabled(true); // Enabling play button;
+        startButton.animate().alpha(1); //Set opacity of enabled button to max
+        plusOneButton.setImageResource(R.drawable.ic_plus_one); //Reset plus one button
+        plusOneButton.setEnabled(false); // Disable +1 button
+        plusOneButton.animate().alpha(0.4f); //Lower the opacity of disabled button
+        isTimerActive = false; // Updating status of time activity
+        timeSetByUser = -1; // Resetting variable
     }
 
     public void plusOneButtonPressed(View view){
+        //Check if timer is active or not
         if(isTimerActive) increaseTimerDuration();
         else resetTimer();
     }
