@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar countDownSeekBar;
     private ImageView eggImage, finalEggImage;
     private TextView displayTime;
-    private ImageButton startButton, resetButton, plusOneButton;
+    private ImageButton startButton, deleteButton, plusOneButton;
 
     //Count down timer which controls the timer time set by user
     CountDownTimer countDownTimer;
@@ -32,13 +32,17 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
     //Declaring and setting some constants
-    final int initialTime = 30, maximumTime = 600;
+    final private int initialTime = 30, maximumTime = 600;
+    private int timeSetByUser = -1;
 
     // boolean variable that will track if any timer is already present or not
     private boolean isTimerActive = false;
 
     //Function to start the timer
     private void startTimer(){
+
+        plusOneButton.setEnabled(true);
+        plusOneButton.animate().alpha(1);
 
         //Updates egg image over a period of time
         finalEggImage.animate().alpha(1).setDuration(countDownSeekBar.getProgress() * 1000);
@@ -78,16 +82,6 @@ public class MainActivity extends AppCompatActivity {
         countDownSeekBar.setProgress(secondsLeft);
     }
 
-    // Function to reset time to default configurations
-    private void resetTimer(){
-        countDownSeekBar.setEnabled(true);  //Disables the seek bar when the timer has reset
-        mediaPlayer.stop(); //Stops the time up tone
-        countDownTimer.cancel(); //Cancel the timer even if not finished by itself
-        updateTimer(initialTime); //Updates the timer to default configuration
-        finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
-        startButton.setImageResource(R.drawable.ic_play_image_button);
-    }
-
     // Function to play the times up tone in loop
     private void playTimesUpRingtone(){
         mediaPlayer = MediaPlayer.create(this ,R.raw.times_up_ringtone);
@@ -95,26 +89,66 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.setLooping(true);
     }
 
+    private  void increaseTimerDuration(){
+        countDownTimer.cancel();
+        int secondsLeft = countDownSeekBar.getProgress();
+        if(secondsLeft > maximumTime - 60 ) secondsLeft = maximumTime;
+        else secondsLeft += 60;
+
+        finalEggImage.animate().alphaBy(timeSetByUser / (timeSetByUser + 60) ).setDuration(1000);
+        updateTimer(secondsLeft);
+        startTimer();
+    }
+    // Function to reset time to default configurations
+    private void resetTimer(){
+        mediaPlayer.stop(); //Stops the time up tone
+        countDownTimer.cancel(); //Cancel the timer even if not finished by itself
+        updateTimer(timeSetByUser); //Updates the timer to default configuration
+        finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
+        startButton.setImageResource(R.drawable.ic_play_image_button); //Set start button
+        plusOneButton.setImageResource(R.drawable.ic_plus_one);
+        plusOneButton.setEnabled(false);
+        plusOneButton.animate().alpha(0.4f);
+        isTimerActive = false;
+    }
+
     // Function linked with button with id = "R.id.startButton"
-    public void triggerCountDown(View view){
+    public void playButtonPressed(View view){
         Log.i("LOGCAT", "Button Pressed");
 
         //Check if a timer is currently active on not
         if(isTimerActive) {
             pauseTimer();
             startButton.setImageResource(R.drawable.ic_play_image_button);
+            plusOneButton.setImageResource(R.drawable.ic_reset_image_button);
         }
         else{
             startTimer();
             startButton.setImageResource(R.drawable.ic_pause);
+            plusOneButton.setImageResource(R.drawable.ic_plus_one);
         }
 
         //Update the timer run status
         isTimerActive ^= true;
     }
 
-    public void triggerStop(View view) {
-        resetTimer();
+    public void deleteButtonPressed(View view) {
+        countDownSeekBar.setEnabled(true);  //Disables the seek bar when the timer has reset
+        mediaPlayer.stop(); //Stops the time up tone
+        countDownTimer.cancel(); //Cancel the timer even if not finished by itself
+        updateTimer(initialTime); //Updates the timer to default configuration
+        finalEggImage.animate().alpha(0).setDuration(1000); //Set visibility of final egg image back to zero
+        startButton.setImageResource(R.drawable.ic_play_image_button); //Set start button
+        plusOneButton.setImageResource(R.drawable.ic_plus_one);
+        plusOneButton.setEnabled(false);
+        plusOneButton.animate().alpha(0.4f);
+        isTimerActive = false;
+        timeSetByUser = -1;
+    }
+
+    public void plusOneButtonPressed(View view){
+        if(isTimerActive) increaseTimerDuration();
+        else resetTimer();
     }
 
     @Override
@@ -128,17 +162,20 @@ public class MainActivity extends AppCompatActivity {
         finalEggImage = findViewById(R.id.finalEggIV);
         displayTime = findViewById(R.id.timerTV);
         startButton = findViewById(R.id.startImageButton);
-        resetButton = findViewById(R.id.resetImageButton);
+        deleteButton = findViewById(R.id.deleteImageButton);
         plusOneButton = findViewById(R.id.plusOneImageButton);
 
         //Setting initial parameters
         countDownSeekBar.setMax(maximumTime);
         countDownSeekBar.setProgress(initialTime);
+        plusOneButton.setEnabled(false);
+        plusOneButton.animate().alpha(0.4f);
 
         //When seek bar is altered by user
         countDownSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(timeSetByUser == -1) timeSetByUser = progress;
                 updateTimer(progress);
             }
 

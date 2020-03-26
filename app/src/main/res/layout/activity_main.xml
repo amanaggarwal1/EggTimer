@@ -67,19 +67,19 @@
         app:layout_constraintTop_toBottomOf="@+id/eggIV">
 
         <ImageButton
-            android:id="@+id/resetImageButton"
+            android:id="@+id/deleteImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="triggerStop"
-            app:srcCompat="@drawable/ic_reset_image_button" />
+            android:onClick="deleteButtonPressed"
+            app:srcCompat="@drawable/ic_delete" />
 
         <ImageButton
             android:id="@+id/startImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="triggerCountDown"
+            android:onClick="playButtonPressed"
             app:srcCompat="@drawable/ic_play_image_button" />
 
         <ImageButton
@@ -87,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="plusOneButtonPressed"
             app:srcCompat="@drawable/ic_plus_one" />
     </LinearLayout>
 
