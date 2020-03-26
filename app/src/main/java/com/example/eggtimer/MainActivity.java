@@ -32,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
     final int initialTime = 30, maximumTime = 600;
 
     // boolean variable that will track if any timer is already present or not
-    private boolean isTimerRunning = false;
+    private boolean isTimerActive = false;
 
     //Function to start the timer
     private void startTimer(){
+
+        countDownSeekBar.setEnabled(false);
+
         countDownTimer = new CountDownTimer(countDownSeekBar.getProgress()*1000 + 100, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to reset time to default configurations
     private void resetTimer(){
+        countDownSeekBar.setEnabled(true);
         mediaPlayer.stop();
         countDownTimer.cancel();
         updateTimer(initialTime);
@@ -82,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
     public void triggerCountDown(View view){
         Log.i("LOGCAT", "Button Pressed");
 
-        //Check if a timer is currently running on not
-        if(isTimerRunning) {
+        //Check if a timer is currently active on not
+        if(isTimerActive) {
             resetTimer();
             startButton.setImageResource(R.drawable.ic_play_image_button);
         }
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Update the timer run status
-        isTimerRunning ^= true;
+        isTimerActive ^= true;
     }
 
     @Override
