@@ -6,20 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="128dp"
-        android:layout_marginBottom="32dp"
-        android:text="Button"
-        android:onClick="triggerCountDown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eggIV" />
 
     <SeekBar
         android:id="@+id/timerSeekBar"
@@ -54,5 +40,20 @@
         app:layout_constraintEnd_toEndOf="@+id/eggIV"
         app:layout_constraintStart_toStartOf="@+id/eggIV"
         app:layout_constraintTop_toTopOf="@+id/eggIV" />
+
+    <ImageButton
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="182dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="181dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="triggerCountDown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eggIV"
+        app:srcCompat="@drawable/ic_play_image_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

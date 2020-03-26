@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar countDownSeekBar;
     private ImageView eggImage;
     private TextView displayTime;
-    private Button startButton;
+    private ImageButton startButton;
 
     //Count down timer which controls the timer time set by user
     CountDownTimer countDownTimer;
@@ -33,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
     // boolean variable that will track if any timer is already present or not
     private boolean isTimerRunning = false;
 
+    //Function to start the timer
     private void startTimer(){
-        countDownTimer = new CountDownTimer(countDownSeekBar.getProgress()*1000, 1000) {
+        countDownTimer = new CountDownTimer(countDownSeekBar.getProgress()*1000 + 100, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 updateTimer((int) millisUntilFinished / 1000);
@@ -48,33 +50,49 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    //Function to update views for timer
     private void updateTimer(int secondsLeft){
         int minutes = secondsLeft / 60; // Calculating minutes corresponding to progress
         int seconds = secondsLeft % 60; // Calculating seconds corresponding to progress
 
-        if(seconds < 10)
-            displayTime.setText(minutes + ":0" + seconds);
-        else
-            displayTime.setText(minutes + ":" + seconds);
+        //Check if "seconds" variable is a single digit number or not
+        //and if yes then add a "zero" before it in display time
+        if(seconds < 10) displayTime.setText(minutes + ":0" + seconds);
+        else displayTime.setText(minutes + ":" + seconds);
+
+        //Update the progress in timer seek bar
+        countDownSeekBar.setProgress(secondsLeft);
     }
 
+    // Function to reset time to default configurations
     private void resetTimer(){
         mediaPlayer.stop();
         countDownTimer.cancel();
         updateTimer(initialTime);
     }
 
+    // Function to play the times up tone in loop
     private void playTimesUpRingtone(){
         mediaPlayer = MediaPlayer.create(this ,R.raw.times_up_ringtone);
         mediaPlayer.start();
         mediaPlayer.setLooping(true);
     }
 
+    // Function linked with button with id = "R.id.startButton"
     public void triggerCountDown(View view){
         Log.i("LOGCAT", "Button Pressed");
-        if(isTimerRunning) resetTimer();
-        else startTimer();
 
+        //Check if a timer is currently running on not
+        if(isTimerRunning) {
+            resetTimer();
+            startButton.setImageResource(R.drawable.ic_play_image_button);
+        }
+        else{
+            startTimer();
+            startButton.setImageResource(R.drawable.ic_reset_image_button);
+        }
+
+        //Update the timer run status
         isTimerRunning ^= true;
     }
 
