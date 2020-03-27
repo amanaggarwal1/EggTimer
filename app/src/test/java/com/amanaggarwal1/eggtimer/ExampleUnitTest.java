@@ -1,4 +1,4 @@
-package com.example.eggtimer;
+package com.amanaggarwal1.eggtimer;
 
 import org.junit.Test;
 

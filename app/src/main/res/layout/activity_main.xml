@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="deleteButtonPressed"
-            android:layout_margin="16dp"
+            android:layout_margin="32dp"
             app:srcCompat="@drawable/ic_delete" />
 
         <ImageButton
@@ -80,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="16dp"
+            android:layout_margin="32dp"
             android:onClick="playButtonPressed"
             app:srcCompat="@drawable/ic_play_image_button" />
 
@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="16dp"
+            android:layout_margin="32dp"
             android:onClick="plusOneButtonPressed"
             app:srcCompat="@drawable/ic_plus_one" />
     </LinearLayout>
